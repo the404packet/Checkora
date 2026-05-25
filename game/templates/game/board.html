@@ -247,17 +247,21 @@
                 </div>
             </div>
             <div class="board-outer">
-                <div class="board-row">
-                    <div class="ranks" id="ranksLabels">
-                        <span>8</span><span>7</span><span>6</span><span>5</span>
-                        <span>4</span><span>3</span><span>2</span><span>1</span>
+                <div class="board-aligned">
+                    <div class="board-row">
+                        <div class="ranks" id="ranksLabels">
+                            <span>8</span><span>7</span><span>6</span><span>5</span>
+                            <span>4</span><span>3</span><span>2</span><span>1</span>
+                        </div>
+                        <div class="board-grid-wrap">
+                            <div class="chessboard" id="board" role="grid" aria-label="Chess Board"></div>
+                        </div>
+                        <div id="a11y-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
                     </div>
-                    <div class="chessboard" id="board" role="grid" aria-label="Chess Board"></div>
-                    <div id="a11y-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
-                </div>
-                <div class="files" id="filesLabels">
-                    <span>a</span><span>b</span><span>c</span><span>d</span>
-                    <span>e</span><span>f</span><span>g</span><span>h</span>
+                    <div class="files" id="filesLabels">
+                        <span>a</span><span>b</span><span>c</span><span>d</span>
+                        <span>e</span><span>f</span><span>g</span><span>h</span>
+                    </div>
                 </div>
             </div>
 
@@ -302,7 +306,9 @@
             <div class="card">
                 <div class="card-title">Game Controls</div>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-<button type="button" class="btn btn-gold" id="flipBtn" title="Shortcut: F">Flip Board<span class="btn-shortcut">F</span></button>
+
+                    <button type="button" class="btn btn-gold" id="flipBtn" title="Shortcut: F">Flip Board<span class="btn-shortcut">F</span></button>
+                   <button class="btn btn-gold" id="blindfoldBtn">Blindfold: OFF</button>
                     <button class="btn btn-gold" id="newPvPBtn">Pass & Play (PvP)</button>
                     <button class="btn btn-gold" id="newAIBtn">Play vs AI</button>
                     <button class="btn btn-gold" id="copyFenBtn">Copy FEN</button>
@@ -472,7 +478,10 @@
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <button type="button" class="btn btn-gold" id="shareResultBtn" style="padding: 12px; font-size: 1rem;">📤 Share Result</button>
                 <button class="btn btn-gold" id="gameOverStartBtn" style="padding: 12px; font-size: 1rem;">Start New Game</button>
-                <button type="button" id="exitToMenuBtn" class="btn" style="padding: 12px; font-size: 1rem; background: #2a1414; color: #ff6b6b; border: 1px solid #632424; cursor: pointer; text-align: center; border-radius: 5px;">Exit to Menu</button>
+               <a href="{% url 'landing' %}" class="btn" id="gameOverExitBtn"
+   style="padding: 12px; font-size: 1rem; margin-top: 10px; background: #333; color: #fff; cursor: pointer; text-align: center; text-decoration: none; display: block;">
+    Exit to Home
+</a>
             </div>
         </div>
     </div>
