@@ -511,7 +511,7 @@
 </div> 
     <!-- ========== GAME OVER MODAL ========== -->
     <div class="promo-overlay" id="gameOverOverlay" style="z-index: 10000;">
-        <div class="promo-dialog premium-result-dialog">
+        <div class="promo-dialog premium-result-dialog" role="dialog" aria-modal="true" aria-labelledby="gameOverTitle" aria-describedby="gameOverMessage">
             <div class="result-modal-columns">
                 <!-- Left Column: Banner, Illustration & Buttons -->
                 <div class="result-column-left">
@@ -570,17 +570,13 @@
                                 <span class="stat-value" id="gameDurationText">00:00</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Accuracy</span>
-                                <span class="stat-value" id="resSummaryAccuracy">85% | 78%</span>
+                                <span class="stat-label">Material</span>
+                                <span class="stat-value" id="resMaterialDiff">Even</span>
                             </div>
                         </div>
 
                         <!-- Material difference and captured pieces summary -->
                         <div class="summary-material-section">
-                            <div class="material-balance-row">
-                                <span class="material-label">Material Difference:</span>
-                                <span class="material-val" id="resMaterialDiff">Even</span>
-                            </div>
                             <div class="captured-preview-container">
                                 <div class="captured-row-mini">
                                     <span class="side-indicator-dot white"></span>
