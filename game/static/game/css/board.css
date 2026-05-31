@@ -540,19 +540,19 @@ body {
 .square.last-move.light { background-color: var(--sq-last-light); }
 .square.last-move.dark  { background-color: var(--sq-last-dark); }
 .custom-highlight.light {
-<<<<<<< HEAD
+
     background-color: rgba(80, 180, 255, 0.45);
 }
 
 .custom-highlight.dark {
     background-color: rgba(40, 120, 220, 0.55);
-=======
+
     background-color: rgba(80, 180, 255, 0.45) !important;
 }
 
 .custom-highlight.dark {
     background-color: rgba(40, 120, 220, 0.55) !important;
->>>>>>> upstream/main
+
 }
 
 .square.premove.light {
@@ -1335,7 +1335,7 @@ body {
   display: none; 
 }
 
- {
+
   .m-fab {
     display: flex;
     flex-direction: column;
@@ -1381,7 +1381,7 @@ body {
   body:has(.promo-overlay.active) .m-fab {
     display: none;
   }
-}
+
 .promo-logo {
     display: flex;
     align-items: center;
