@@ -393,8 +393,12 @@
             
             // post() uses csrf()
             function csrf() {
+                const input = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (input?.value) {
+                    return input.value;
+                }
                 const m = document.cookie.match(/csrftoken=([^;]+)/);
-                return m ? decodeURIComponent(m[1]) : '';  // ← returns empty on Vercel
+                return m ? decodeURIComponent(m[1]) : '';
             }
 
             async function get(url) {
