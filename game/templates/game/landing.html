@@ -7,7 +7,7 @@
         (function () {
         var nav = performance.getEntriesByType('navigation')[0];
         if (nav && nav.type === 'reload') {
-          window.location.replace('/');
+          window.location.replace("{% url 'preloader' %}");
         }
         })();
     </script>

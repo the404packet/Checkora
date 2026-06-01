@@ -68,7 +68,7 @@
       <p class="ck-tagline">Hybrid Intelligence &nbsp;·&nbsp; Chess Engine</p>
 
       <!-- Progress -->
-      <div class="ck-progress-wrap" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100">
+      <div class="ck-progress-wrap" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ckProgressBar">
         <div class="ck-progress-track">
           <div class="ck-progress-fill" id="ckFill"></div>
         </div>
@@ -148,6 +148,7 @@
       // Ease the number so it slows near 100
       const eased = Math.round(100 * (1 - Math.pow(1 - raw / 100, 2.2)));
       pct.textContent = eased + '%';
+      document.getElementById('ckProgressBar').setAttribute('aria-valuenow', eased);
 
       // Stage messages
       for (let i = stages.length - 1; i >= 0; i--) {

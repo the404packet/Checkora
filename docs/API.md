@@ -251,11 +251,11 @@ Serves the animated preloader screen. This is the root entry point of the applic
 *   **View:** `views.preloader`
 *   **Template:** `game/preloading.html`
 *   **Success Response:** Renders the preloader HTML page with animated chess engine boot sequence.
-*   **Redirect Behaviour:** After 2.6s the client-side JavaScript sets `sessionStorage` flags and redirects to `/home/`.
+*   **Redirect Behaviour:** After 2.6s the client-side JavaScript redirects to `/home/`.
 
 **Notes:**
 - This endpoint has no JSON response — it returns a full HTML page.
 - The redirect to `/home/` is handled entirely client-side via `window.location.href`.
-- If `/home/` detects a page reload (`performance.navigation.type === 'reload'`), it bounces the user back to `/` to replay the preloader.
+- If `/home/` detects a page reload (`performance.getEntriesByType('navigation')[0].type === 'reload'`), it bounces the user back to `/` to replay the preloader.
 
 ---

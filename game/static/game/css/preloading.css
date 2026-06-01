@@ -3,8 +3,7 @@
    Fonts: Cinzel (title/logo) · Inter (body)
    ═══════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
-
+@import 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@400;500;600&display=swap';
 :root {
   --gold:        #f0c040;
   --gold-bright: #ffe082;
@@ -23,7 +22,7 @@ html, body {
 
 /* ── Page wrapper ── */
 .ck-page {
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
   width: 100vw; height: 100vh;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg);
@@ -231,7 +230,7 @@ html, body {
 }
 
 .ck-title {
-  font-family: 'Cinzel', serif;
+  font-family: Cinzel, serif;
   font-weight: 700;
   font-size: clamp(2rem, 5vw, 3rem);
   letter-spacing: 2px;
@@ -254,7 +253,7 @@ html, body {
 
 /* ── Tagline — Inter, matches nav/body copy style ── */
 .ck-tagline {
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
   font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.22em;
@@ -311,7 +310,7 @@ html, body {
   display: flex;
   justify-content: flex-end;
   margin-top: 6px;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -324,7 +323,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
   font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.18em;
