@@ -70,6 +70,10 @@
             let currentPuzzleFen = null;
             let puzzleAnalyzing = false;
             let stockfishWorker = null;
+    
+            let hintLevel = 0;
+            let hintSquares = [];
+
             let expectedMoveEval = null;
             let evaluationCache = {};
             let currentDifficulty = 'medium';
@@ -235,6 +239,55 @@
                 }
             }
     
+            function clearPuzzleHints() {
+                hintSquares = [];
+                hintLevel = 0;
+
+                document.querySelectorAll(".square").forEach(square => {
+                    square.classList.remove("hint-source");
+                    square.classList.remove("hint-target");
+                });
+            }
+
+            function showPuzzleHint() {
+                if (!dailyPuzzleMode || !currentPuzzle) return;
+
+                const move = currentPuzzle.solution[puzzleMoveIndex];
+
+                if (!move) return;
+
+                const fromFile = move.charCodeAt(0) - 97;
+                const fromRank = 8 - parseInt(move[1]);
+
+                const toFile = move.charCodeAt(2) - 97;
+                const toRank = 8 - parseInt(move[3]);
+
+                clearPuzzleHints();
+                const sourceSq = sq(fromRank, fromFile);
+                const targetSq = sq(toRank, toFile);
+
+                if (hintLevel === 0) {
+
+                    if (sourceSq) {
+                        sourceSq.classList.add("hint-source")
+                    };
+
+                    hintLevel = 1;
+
+                } else {
+
+                    if (sourceSq) {
+                        sourceSq.classList.add("hint-source");
+                    }
+
+                    if (targetSq) {
+                        targetSq.classList.add("hint-target");
+                    }
+
+                    hintLevel = 2;
+                }
+            }
+    
             function getCurrentWeeklyPuzzle() {
 
                 const today = new Date();
@@ -245,6 +298,7 @@
 
                 return PUZZLES[dayIndex];
             }
+    
 
             function initStockfish() {
                 if (!stockfishWorker) {
@@ -365,10 +419,17 @@
 
                 document.getElementById("streak-counter").style.display = "block";
                 updateStreakDisplay();
+
                 if (restartPuzzleBtn) {
                     restartPuzzleBtn.style.display = 'block';
                 }
+
+                if (hintPuzzleBtn) {
+                    hintPuzzleBtn.style.display = 'block';
+                }
+
                 puzzleMoveIndex = 0;
+                clearPuzzleHints();
 
                 await startNewGame(
                     "pvp",
@@ -504,6 +565,7 @@
             const newAIBtn = document.getElementById('newAIBtn');
             const dailyPuzzleBtn = document.getElementById('dailyPuzzleBtn');
             const restartPuzzleBtn = document.getElementById('restartPuzzleBtn');
+            const hintPuzzleBtn = document.getElementById('hintPuzzleBtn');
             const newFenBtn = document.getElementById('newFenBtn');
 
             const fenOverlay = document.getElementById('fenOverlay');
@@ -1468,6 +1530,8 @@
                                     currentPuzzle.solution[puzzleMoveIndex];
 
                                 if (playedMove === expectedMove) {
+
+                                    clearPuzzleHints();
 
                                     puzzleMoveIndex++;
                                     currentPuzzleFen = data.fen;
@@ -3434,6 +3498,7 @@
                 if (!currentPuzzle) return;
 
                 puzzleMoveIndex = 0;
+                clearPuzzleHints();
 
                 await startNewGame(
                     "pvp",
@@ -3446,6 +3511,11 @@
                     "Puzzle Restarted",
                     false
                 );
+            };
+    
+            if (hintPuzzleBtn)
+                hintPuzzleBtn.onclick = () => {
+                    showPuzzleHint();
             };
     
             if (newFenBtn) newFenBtn.onclick = () => {
