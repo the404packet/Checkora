@@ -1517,7 +1517,9 @@
                             board = parseBoard(data.board);
                             turn = data.current_turn;
 
-                            if (data.threefold_warning) {
+                            const hasThreefoldWarning = data.threefold_warning;
+
+                            if (hasThreefoldWarning) {
                                 showStatus(
                                     '⚠️ This position has appeared twice. One more repetition will trigger a draw.',
                                     false
@@ -1662,7 +1664,9 @@
                                 a11yMsg += checkMsg;
                             } else {
                                 highlightCheck();
-                                showStatus('', false);
+                                if (!hasThreefoldWarning) {
+                                    showStatus('', false);
+                                }
                             }
                             if (a11yMsg) announceMove(a11yMsg);
                         }
@@ -1783,7 +1787,9 @@
                                 a11yMsg += checkMsg;
                             } else {
                                 highlightCheck();
-                                showStatus('Your turn.', false);
+                                if (!hasThreefoldWarning) {
+                                    showStatus('Your turn.', false);
+                                }
                             }
                             if (a11yMsg) announceMove(a11yMsg);
 
