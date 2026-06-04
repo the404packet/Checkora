@@ -1521,10 +1521,6 @@ def lesson_detail_view(request, lesson_name):
             ],
             "lesson_steps": [
                 {
-                    "instruction": "Move the queen from h5 to e8 and give check.",
-                    "expected_move": "h5-e8"
-                },
-                {
                     "instruction": "Move the queen from h5 to f7 and deliver checkmate.",
                     "expected_move": "h5-f7"
                 }
@@ -1534,7 +1530,6 @@ def lesson_detail_view(request, lesson_name):
                 "h5": "Q",
                 "e8": "K",
                 "c4": "B",
-                "e8": "K",
                 "f7": "P"
             },
         },
@@ -1576,11 +1571,6 @@ def lesson_detail_view(request, lesson_name):
                 {
                     "instruction": "Castle kingside by moving the king from e1 to g1.",
                     "expected_move": "e1-g1"
-                },
-                {
-
-                    "instruction": "Castle queenside by moving the king from e1 to c1.",
-                    "expected_move": "e1-c1"
                 }
             ],
 
