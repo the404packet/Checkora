@@ -298,14 +298,19 @@
 
     {% else %}
 
-    <a
-        href="{% url 'complete_lesson' lesson.title %}"
-        style="text-decoration:none;"
+    <form
+        method="post"
+        action="{% url 'complete_lesson' lesson.title %}"
     >
-        <button class="complete-btn">
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="complete-btn"
+        >
             ✓ Mark Lesson Complete
         </button>
-    </a>
+    </form>
 
     {% endif %}
 

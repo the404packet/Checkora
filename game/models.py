@@ -87,7 +87,8 @@ class LessonProgress(models.Model):
     )
 
     completed_at = models.DateTimeField(
-        auto_now=True
+        null=True,
+        blank=True
     )
 
     class Meta:

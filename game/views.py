@@ -7,11 +7,12 @@ import secrets
 import secrets as secrets_module
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.http import (
     urlsafe_base64_encode,
     urlsafe_base64_decode
@@ -1378,8 +1379,8 @@ def lessons_view(request):
         }
     )
 
-def lesson_detail_view(request, lesson_name):
 
+def lesson_detail_view(request, lesson_name):
     lesson_data = {
         "How Pieces Move": {
             "title": "How Pieces Move",
@@ -1407,8 +1408,8 @@ def lesson_detail_view(request, lesson_name):
                 {
                     "title": "Pawn Movement",
                     "position": {
-                    "e2": "P"
-                },
+                        "e2": "P"
+                    },
                     "highlight": [
                         "e3",
                         "e4"
@@ -1418,7 +1419,7 @@ def lesson_detail_view(request, lesson_name):
                 {
                     "title": "Knight Movement",
                     "position": {
-                    "g1": "N"
+                        "g1": "N"
                     },
                     "highlight": [
                         "e2",
@@ -1442,7 +1443,7 @@ def lesson_detail_view(request, lesson_name):
                         "h8"
                     ]
                 }
-            ],
+            ]
         },
 
         "Check and Checkmate": {
@@ -1503,7 +1504,7 @@ def lesson_detail_view(request, lesson_name):
                 "Castling moves the king and rook simultaneously.",
                 "The king cannot castle if it has already moved.",
                 "The rook involved must not have moved.",
-                "The king cannot castle through check."
+                "The king cannot castle through check.",
                 "Castling improves king safety and rook activity."
             ],
             "board_examples": [
@@ -1542,29 +1543,29 @@ def lesson_detail_view(request, lesson_name):
                 "Connect your rooks."
             ],
             "board_examples": [
-    {
-        "title": "Control the Center",
-        "position": {
-            "e2": "P",
-            "d2": "P"
-        },
-        "highlight": [
-            "e4",
-            "d4"
-        ]
-    },
-    {
-        "title": "Develop Knights",
-        "position": {
-            "b1": "N",
-            "g1": "N"
-        },
-        "highlight": [
-            "c3",
-            "f3"
-        ]
-    }
-]
+                {
+                    "title": "Control the Center",
+                    "position": {
+                        "e2": "P",
+                        "d2": "P"
+                    },
+                    "highlight": [
+                        "e4",
+                        "d4"
+                    ]
+                },
+                {
+                    "title": "Develop Knights",
+                    "position": {
+                        "b1": "N",
+                        "g1": "N"
+                    },
+                    "highlight": [
+                        "c3",
+                        "f3"
+                    ]
+                }
+            ]
         },
 
         "Forks": {
@@ -1593,19 +1594,19 @@ def lesson_detail_view(request, lesson_name):
                 "Forks often win material."
             ],
             "board_examples": [
-    {
-        "title": "Knight Fork",
-        "position": {
-            "f6": "N",
-            "e8": "Q",
-            "g8": "R"
-        },
-        "highlight": [
-            "e8",
-            "g8"
-        ]
-    }
-]
+                {
+                    "title": "Knight Fork",
+                    "position": {
+                        "f6": "N",
+                        "e8": "Q",
+                        "g8": "R"
+                    },
+                    "highlight": [
+                        "e8",
+                        "g8"
+                    ]
+                }
+            ]
         },
 
         "Pins": {
@@ -1629,19 +1630,19 @@ def lesson_detail_view(request, lesson_name):
                 "Pins can create tactical opportunities."
             ],
             "board_examples": [
-    {
-        "title": "Bishop Pin",
-        "position": {
-            "b5": "B",
-            "c6": "N",
-            "e8": "K"
-        },
-        "highlight": [
-            "c6",
-            "e8"
-        ]
-    }
-]
+                {
+                    "title": "Bishop Pin",
+                    "position": {
+                        "b5": "B",
+                        "c6": "N",
+                        "e8": "K"
+                    },
+                    "highlight": [
+                        "c6",
+                        "e8"
+                    ]
+                }
+            ]
         },
 
         "Skewers": {
@@ -1665,19 +1666,19 @@ def lesson_detail_view(request, lesson_name):
                 "Skewers frequently win material."
             ],
             "board_examples": [
-    {
-        "title": "Queen Skewer",
-        "position": {
-            "a4": "Q",
-            "e8": "K",
-            "e7": "R"
-        },
-        "highlight": [
-            "e8",
-            "e7"
-        ]
-    }
-]
+                {
+                    "title": "Queen Skewer",
+                    "position": {
+                        "a4": "Q",
+                        "e8": "K",
+                        "e7": "R"
+                    },
+                    "highlight": [
+                        "e8",
+                        "e7"
+                    ]
+                }
+            ]
         },
 
         "Discovered Attacks": {
@@ -1701,19 +1702,19 @@ def lesson_detail_view(request, lesson_name):
                 "Coordinate your pieces to create tactical threats."
             ],
             "board_examples": [
-    {
-        "title": "Discovered Attack",
-        "position": {
-            "a1": "R",
-            "a2": "N",
-            "a8": "Q"
-        },
-        "highlight": [
-            "a2",
-            "a8"
-        ]
-    }
-]
+                {
+                    "title": "Discovered Attack",
+                    "position": {
+                        "a1": "R",
+                        "a2": "N",
+                        "a8": "Q"
+                    },
+                    "highlight": [
+                        "a2",
+                        "a8"
+                    ]
+                }
+            ]
         },
 
         "Pawn Structures": {
@@ -1737,29 +1738,29 @@ def lesson_detail_view(request, lesson_name):
                 "Doubled and isolated pawns can become weaknesses."
             ],
             "board_examples": [
-    {
-        "title": "Pawn Chain",
-        "position": {
-            "c3": "P",
-            "d4": "P",
-            "e5": "P"
-        },
-        "highlight": [
-            "c3",
-            "d4",
-            "e5"
-        ]
-    },
-    {
-        "title": "Isolated Pawn",
-        "position": {
-            "d4": "P"
-        },
-        "highlight": [
-            "d4"
-        ]
-    }
-]
+                {
+                    "title": "Pawn Chain",
+                    "position": {
+                        "c3": "P",
+                        "d4": "P",
+                        "e5": "P"
+                    },
+                    "highlight": [
+                        "c3",
+                        "d4",
+                        "e5"
+                    ]
+                },
+                {
+                    "title": "Isolated Pawn",
+                    "position": {
+                        "d4": "P"
+                    },
+                    "highlight": [
+                        "d4"
+                    ]
+                }
+            ]
         },
 
         "King Safety": {
@@ -1783,21 +1784,21 @@ def lesson_detail_view(request, lesson_name):
                 "A safe king allows active play elsewhere."
             ],
             "board_examples": [
-    {
-        "title": "Safe Castled King",
-        "position": {
-            "g1": "K",
-            "f2": "P",
-            "g2": "P",
-            "h2": "P"
-        },
-        "highlight": [
-            "f2",
-            "g2",
-            "h2"
-        ]
-    }
-]
+                {
+                    "title": "Safe Castled King",
+                    "position": {
+                        "g1": "K",
+                        "f2": "P",
+                        "g2": "P",
+                        "h2": "P"
+                    },
+                    "highlight": [
+                        "f2",
+                        "g2",
+                        "h2"
+                    ]
+                }
+            ]
         },
 
         "Piece Activity": {
@@ -1821,23 +1822,23 @@ def lesson_detail_view(request, lesson_name):
                 "Activity often outweighs material advantages."
             ],
             "board_examples": [
-    {
-        "title": "Active Knight",
-        "position": {
-            "d5": "N"
-        },
-        "highlight": [
-            "b4",
-            "b6",
-            "c3",
-            "c7",
-            "e3",
-            "e7",
-            "f4",
-            "f6"
-        ]
-    }
-]
+                {
+                    "title": "Active Knight",
+                    "position": {
+                        "d5": "N"
+                    },
+                    "highlight": [
+                        "b4",
+                        "b6",
+                        "c3",
+                        "c7",
+                        "e3",
+                        "e7",
+                        "f4",
+                        "f6"
+                    ]
+                }
+            ]
         },
 
         "Basic Endgames": {
@@ -1861,36 +1862,39 @@ def lesson_detail_view(request, lesson_name):
                 "Practice common checkmating patterns."
             ],
             "board_examples": [
-    {
-        "title": "King and Pawn Endgame",
-        "position": {
-            "e5": "K",
-            "e6": "P",
-            "e8": "K"
-        },
-        "highlight": [
-            "e6",
-            "e7",
-            "e8"
-        ]
-    },
-    {
-        "title": "Opposition",
-        "position": {
-            "e4": "K",
-            "e6": "K"
-        },
-        "highlight": [
-            "e4",
-            "e6"
-        ]
-    }
-]
+                {
+                    "title": "King and Pawn Endgame",
+                    "position": {
+                        "e5": "K",
+                        "e6": "P",
+                        "e8": "K"
+                    },
+                    "highlight": [
+                        "e6",
+                        "e7",
+                        "e8"
+                    ]
+                },
+                {
+                    "title": "Opposition",
+                    "position": {
+                        "e4": "K",
+                        "e6": "K"
+                    },
+                    "highlight": [
+                        "e4",
+                        "e6"
+                    ]
+                }
+            ]
         }
     }
 
     lesson = lesson_data.get(lesson_name)
-
+    
+    if lesson is None:
+        raise Http404("Lesson not found")
+    
     lesson_order = list(lesson_data.keys())
 
     current_index = lesson_order.index(lesson_name)
@@ -1949,13 +1953,15 @@ def lesson_detail_view(request, lesson_name):
     )
 
 @login_required
+@require_POST
 def complete_lesson(request, lesson_name):
 
     LessonProgress.objects.update_or_create(
         user=request.user,
         lesson_name=lesson_name,
         defaults={
-            "completed": True
+            "completed": True,
+            "completed_at": timezone.now(),
         }
     )
 
