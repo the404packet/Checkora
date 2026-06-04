@@ -1494,7 +1494,7 @@ def lessons_view(request):
 
     return render(
         request,
-        "lessons.html",
+        "game/lessons.html",
         {
             "lessons": lessons,
             "completed_lessons": completed_lessons,
