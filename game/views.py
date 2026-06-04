@@ -483,7 +483,7 @@ def ai_move(request):
             record_game_result(request, game.mode, winner, 'checkmate', game.player_color, moves=game.move_history)
         elif game_status in ('stalemate', 'draw'):
             record_game_result(request, game.mode, 'draw', game.draw_reason or 'stalemate', game.player_color, moves=game.move_history)
-    
+
     return JsonResponse({
         'valid': success,
         'message': message,
@@ -1567,8 +1567,38 @@ def lesson_detail_view(request, lesson_name):
                         "h8"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Move the knight from g1 to f3.",
+                    "expected_move": "g1-f3"
+                },
+                {
+                    "instruction": "Move the bishop from f1 to c4.",
+                    "expected_move": "f1-c4"
+                },
+                {
+                    "instruction": "Move the rook from a1 to a4.",
+                    "expected_move": "a1-a4"
+                },
+                {
+                    "instruction": "Move the queen from d1 to h5.",
+                    "expected_move": "d1-h5"
+                },
+                {
+                    "instruction": "Move the king from e1 to e2.",
+                    "expected_move": "e1-e2"
+                }
+            ],
+            "practice_position": {
+                "g1": "N",
+                "f1": "B",
+                "a1": "R",
+                "d1": "Q",
+                "e1": "K"
+            },
         },
+
 
         "Check and Checkmate": {
             "title": "Check and Checkmate",
@@ -1608,7 +1638,20 @@ def lesson_detail_view(request, lesson_name):
                     },
                     "highlight": ["g7"]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Move the queen from h5 to f7 and deliver checkmate.",
+                    "expected_move": "h5-f7"
+                }
+            ],
+
+            "practice_position": {
+                "h5": "Q",
+                "e8": "K",
+                "c4": "B",
+                "f7": "P"
+            },
         },
 
         "Castling": {
@@ -1643,7 +1686,19 @@ def lesson_detail_view(request, lesson_name):
                         "g1"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Castle kingside by moving the king from e1 to g1.",
+                    "expected_move": "e1-g1"
+                }
+            ],
+
+            "practice_position": {
+                "e1": "K",
+                "h1": "R",
+                "a1": "R"
+            }
         },
 
         "Opening Principles": {
@@ -1689,7 +1744,30 @@ def lesson_detail_view(request, lesson_name):
                         "f3"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Control the center by playing e4.",
+                    "expected_move": "e2-e4"
+                },
+                {
+                    "instruction": "Develop the knight from g1 to f3.",
+                    "expected_move": "g1-f3"
+                },
+                {
+                    "instruction": "Develop the bishop from f1 to c4.",
+                    "expected_move": "f1-c4"
+                }
+            ],
+
+            "practice_position": {
+                "e1": "K",
+                "d1": "Q",
+                "f1": "B",
+                "g1": "N",
+                "e2": "P",
+                "d2": "P"
+            },
         },
 
         "Forks": {
@@ -1730,7 +1808,18 @@ def lesson_detail_view(request, lesson_name):
                         "g8"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Move the knight from e5 to c6 and fork the king and queen.",
+                    "expected_move": "e5-c6"
+                }
+            ],
+            "practice_position": {
+                "e5": "N",
+                "d8": "Q",
+                "e8": "K"
+            }
         },
 
         "Pins": {
@@ -1766,7 +1855,18 @@ def lesson_detail_view(request, lesson_name):
                         "e8"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Move the bishop from b5 to pin the knight to the king.",
+                    "expected_move": "f1-b5"
+                }
+            ],
+            "practice_position": {
+                "f1": "B",
+                "c6": "N",
+                "e8": "K"
+            }
         },
 
         "Skewers": {
@@ -1802,7 +1902,18 @@ def lesson_detail_view(request, lesson_name):
                         "e7"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Move the queen from a4 to create a skewer.",
+                    "expected_move": "a4-e8"
+                }
+            ],
+            "practice_position": {
+                "a4": "Q",
+                "e8": "K",
+                "d7": "R"
+            }
         },
 
         "Discovered Attacks": {
@@ -1838,7 +1949,18 @@ def lesson_detail_view(request, lesson_name):
                         "a8"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Move the knight from e2 to c3 to reveal the rook attack.",
+                    "expected_move": "e2-c3"
+                }
+            ],
+            "practice_position": {
+                "a1": "R",
+                "e2": "N",
+                "a8": "Q"
+            }
         },
 
         "Pawn Structures": {
@@ -1884,7 +2006,18 @@ def lesson_detail_view(request, lesson_name):
                         "d4"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Advance the passed pawn from d5 to d6.",
+                    "expected_move": "d5-d6"
+                }
+            ],
+
+            "practice_position": {
+                "d5": "P",
+                "e1": "K"
+            },
         },
 
         "King Safety": {
@@ -1922,7 +2055,17 @@ def lesson_detail_view(request, lesson_name):
                         "h2"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Castle kingside.",
+                    "expected_move": "e1-g1"
+                }
+            ],
+            "practice_position": {
+                "e1": "K",
+                "h1": "R"
+            }
         },
 
         "Piece Activity": {
@@ -1962,7 +2105,18 @@ def lesson_detail_view(request, lesson_name):
                         "f6"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Activate the rook by moving from a1 to a7.",
+                    "expected_move": "a1-a7"
+                }
+            ],
+
+            "practice_position": {
+                "a1": "R",
+                "e1": "K"
+            },
         },
 
         "Basic Endgames": {
@@ -2010,15 +2164,26 @@ def lesson_detail_view(request, lesson_name):
                         "e6"
                     ]
                 }
-            ]
+            ],
+            "lesson_steps": [
+                {
+                    "instruction": "Promote the pawn by moving from e7 to e8.",
+                    "expected_move": "e7-e8"
+                }
+            ],
+            "practice_position": {
+                "e7": "P",
+                "e1": "K",
+                "e8": ""
+            }
         }
     }
 
     lesson = lesson_data.get(lesson_name)
-    
+
     if lesson is None:
         raise Http404("Lesson not found")
-    
+
     lesson_order = list(lesson_data.keys())
 
     current_index = lesson_order.index(lesson_name)
@@ -2076,6 +2241,7 @@ def lesson_detail_view(request, lesson_name):
         }
     )
 
+
 @login_required
 @require_POST
 def complete_lesson(request, lesson_name):
@@ -2093,3 +2259,4 @@ def complete_lesson(request, lesson_name):
         "lesson_detail",
         lesson_name=lesson_name
     )
+ 
