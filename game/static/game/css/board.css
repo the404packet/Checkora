@@ -1674,6 +1674,13 @@ body {
         background: rgba(220, 38, 38, 0.3);
     }
 }
+@media (prefers-reduced-motion: reduce) {
+    .square.in-check,
+    .square.light.in-check,
+    .square.dark.in-check {
+        animation: none !important;
+    }
+}
 
 /* ================= PAUSE STATE ================= */
 /* ================= PAUSE STATE ================= */
