@@ -47,9 +47,16 @@ from .models import (
     GameResult,
     PuzzleStats,
     LessonProgress,
+    Achievement,
+    UserAchievement,
 )
 logger = logging.getLogger(__name__)
-from game.services import cleanup_stale_games
+from game.services import (
+    cleanup_stale_games,
+    check_game_achievements,
+    check_puzzle_achievements,
+)
+
 from .analysis import build_summary
 
 def landing(request):
@@ -82,7 +89,7 @@ def record_game_result(request, mode, winner, reason, player_color='white', move
             moves = game_data.get('move_history', [])
         else:
             moves = []
-    GameResult.objects.create(
+    result = GameResult.objects.create(
         user=user,
         mode=mode,
         winner=winner,
@@ -90,6 +97,9 @@ def record_game_result(request, mode, winner, reason, player_color='white', move
         player_color=player_color,
         moves=moves
     )
+    
+    if user:
+        check_game_achievements(user)
 
 
 @require_POST
@@ -1271,6 +1281,11 @@ def update_puzzle_stats(request):
     stats.daily_completions = data.get("daily_completions", 0)
 
     stats.save()
+    
+    check_puzzle_achievements(
+        request.user,
+        stats
+    )
 
     return JsonResponse({"success": True})
 
@@ -2259,4 +2274,24 @@ def complete_lesson(request, lesson_name):
         "lesson_detail",
         lesson_name=lesson_name
     )
- 
+
+
+@login_required
+def achievements_view(request):
+    achievements = Achievement.objects.all()
+    
+    unlocked = UserAchievement.objects.filter(
+        user=request.user
+    ).values_list(
+        "achievement_id",
+        flat=True
+    )
+
+    return render(
+        request,
+        "game/achievements.html",
+        {
+            "achievements": achievements,
+            "unlocked": unlocked,
+        }
+    )
