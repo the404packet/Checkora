@@ -2363,4 +2363,195 @@ class OtpBruteForceProtectionTest(TestCase):
         self.assertTrue(self.user.is_active)
 
 
+class LoginBruteForceProtectionTest(TestCase):
+    """Test suite for login brute-force protection (lockout mechanisms)."""
+
+    def setUp(self):
+        cache.clear()
+        # Create a legitimate test user
+        self.username = 'legit_user'
+        self.password = 'LegitPassword123!'
+        self.user = User.objects.create_user(
+            username=self.username,
+            password=self.password,
+            email='legit@example.com'
+        )
+        self.login_url = reverse('login')
+
+    def test_normal_login_flow_works(self):
+        """A user with correct credentials can log in successfully."""
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': self.password
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        from django.contrib.messages import get_messages
+        messages_list = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(f'Welcome back, {self.username}! Login successful.', messages_list)
+        self.assertIn('_auth_user_id', self.client.session)
+
+    def test_username_lockout_after_10_failures(self):
+        """A username is locked out after 10 consecutive failed login attempts."""
+        # 9 failed attempts should not lock out
+        for _ in range(9):
+            response = self.client.post(self.login_url, {
+                'username': self.username,
+                'password': 'wrongpassword'
+            })
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'Please enter a correct username and password.')
+
+        # 10th failed attempt locks out and immediately shows the lockout message
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This account is temporarily locked. Try again in 15 minutes.')
+
+        # Submitting correct credentials now fails and does not attempt authentication
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': self.password
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This account is temporarily locked. Try again in 15 minutes.')
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_ip_lockout_after_20_failures(self):
+        """A client IP is locked out after 20 failed attempts."""
+        client_ip = '192.168.1.50'
+        
+        # We perform 19 failed attempts from this IP (using different usernames or same).
+        for i in range(19):
+            response = self.client.post(
+                self.login_url,
+                {'username': f'user_{i}', 'password': 'wrongpassword'},
+                HTTP_X_FORWARDED_FOR=client_ip
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'Please enter a correct username and password.')
+
+        # 20th failed attempt locks out the IP and shows the lockout message
+        response = self.client.post(
+            self.login_url,
+            {'username': 'user_20', 'password': 'wrongpassword'},
+            HTTP_X_FORWARDED_FOR=client_ip
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Too many login attempts from this IP address. Try again in 15 minutes.')
+
+        # A subsequent attempt (even with correct username/password for our valid user) is blocked
+        response = self.client.post(
+            self.login_url,
+            {'username': self.username, 'password': self.password},
+            HTTP_X_FORWARDED_FOR=client_ip
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Too many login attempts from this IP address. Try again in 15 minutes.')
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_successful_login_resets_username_counters(self):
+        """A successful login immediately clears username failure counter and lockout state."""
+        # 5 failed attempts
+        for _ in range(5):
+            self.client.post(self.login_url, {
+                'username': self.username,
+                'password': 'wrongpassword'
+            })
+
+        # Successful login
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': self.password
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        from django.contrib.messages import get_messages
+        messages_list = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(f'Welcome back, {self.username}! Login successful.', messages_list)
+
+        # Let's verify username counter is cleared by doing 9 more failed logins
+        self.client.logout()
+        for _ in range(9):
+            response = self.client.post(self.login_url, {
+                'username': self.username,
+                'password': 'wrongpassword'
+            })
+            self.assertEqual(response.status_code, 200)
+            self.assertNotContains(response, 'This account is temporarily locked.')
+
+    def test_lockout_expiration_after_15_minutes(self):
+        """A locked out username or IP becomes unlocked after 15 minutes."""
+        from game.views import get_username_lockout_key, get_ip_lockout_key
+        
+        # 1. Username lockout check
+        username_key = get_username_lockout_key(self.username)
+        cache.set(username_key, time.time() + 900, timeout=900)
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': self.password
+        })
+        self.assertContains(response, 'This account is temporarily locked.')
+
+        # Delete the key (simulating 15-minute expiration)
+        cache.delete(username_key)
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': self.password
+        }, follow=True)
+        from django.contrib.messages import get_messages
+        messages_list = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(f'Welcome back, {self.username}! Login successful.', messages_list)
+
+        self.client.logout()
+
+        # 2. IP lockout check
+        client_ip = '192.168.1.99'
+        ip_key = get_ip_lockout_key(client_ip)
+        cache.set(ip_key, time.time() + 900, timeout=900)
+        response = self.client.post(
+            self.login_url,
+            {'username': self.username, 'password': self.password},
+            HTTP_X_FORWARDED_FOR=client_ip
+        )
+        self.assertContains(response, 'Too many login attempts from this IP address.')
+
+        # Delete the key (simulating 15-minute expiration)
+        cache.delete(ip_key)
+        response = self.client.post(
+            self.login_url,
+            {'username': self.username, 'password': self.password},
+            HTTP_X_FORWARDED_FOR=client_ip,
+            follow=True
+        )
+        messages_list = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(f'Welcome back, {self.username}! Login successful.', messages_list)
+
+    def test_lockout_messages_show_remaining_time(self):
+        """Lockout error messages show the remaining lockout time in minutes dynamically."""
+        from game.views import get_username_lockout_key, get_ip_lockout_key
+        
+        # Set lockout for username to expire in exactly 7 minutes (420 seconds)
+        username_key = get_username_lockout_key(self.username)
+        cache.set(username_key, time.time() + 420, timeout=900)
+
+        response = self.client.post(self.login_url, {
+            'username': self.username,
+            'password': self.password
+        })
+        self.assertContains(response, 'This account is temporarily locked. Try again in 7 minutes.')
+
+        # Set lockout for IP to expire in exactly 12 minutes (720 seconds)
+        client_ip = '192.168.1.120'
+        ip_key = get_ip_lockout_key(client_ip)
+        cache.set(ip_key, time.time() + 720, timeout=900)
+
+        response = self.client.post(
+            self.login_url,
+            {'username': self.username, 'password': self.password},
+            HTTP_X_FORWARDED_FOR=client_ip
+        )
+        self.assertContains(response, 'Too many login attempts from this IP address. Try again in 12 minutes.')
+
+
 
