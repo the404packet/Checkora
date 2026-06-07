@@ -567,6 +567,11 @@ If you attempt to launch the Django server without setting up a local configurat
     cp .env.example .env
     ```
     Open `.env` and verify you have a robust string under `SECRET_KEY`.
+    Additionally, ensure `TRUSTED_PROXIES` is configured (defaulting to
+    `127.0.0.1,::1` for local development). For production environments
+    (such as Vercel or reverse proxies), set `TRUSTED_PROXIES` to the IPs
+    of the trusted upstream proxies to ensure client IP throttling cannot
+    be bypassed or spoofed.
 
 ### 🔌 6. Port Conflicts (Port 8000 Already in Use)
 If you already have another service running on your local port 8000, Django will fail to bind and throw `Error: That port is already in use.`
