@@ -1557,6 +1557,38 @@ _LESSON_NAMES = (
     "Basic Endgames",
 )
 
+LESSON_LEVELS = [
+    {
+        "id": 1,
+        "title": "Chess Fundamentals",
+        "lessons": [
+            "How Pieces Move",
+            "Check and Checkmate",
+            "Castling",
+            "Opening Principles",
+        ],
+    },
+    {
+        "id": 2,
+        "title": "Basic Tactics",
+        "lessons": [
+            "Forks",
+            "Pins",
+            "Skewers",
+            "Discovered Attacks",
+        ],
+    },
+    {
+        "id": 3,
+        "title": "Advanced Concepts",
+        "lessons": [
+            "Pawn Structures",
+            "King Safety",
+            "Piece Activity",
+            "Basic Endgames",
+        ],
+    },
+]
 
 def _lesson_name_from_slug(lesson_slug):
     for name in _LESSON_NAMES:
@@ -1571,28 +1603,35 @@ def _resolve_lesson_name(url_key):
     return _lesson_name_from_slug(url_key)
 
 
-def lessons_view(request):
-    lessons = {
-        "Beginner": [
-            "How Pieces Move",
-            "Check and Checkmate",
-            "Castling",
-            "Opening Principles",
-        ],
-        "Intermediate": [
-            "Forks",
-            "Pins",
-            "Skewers",
-            "Discovered Attacks",
-        ],
-        "Advanced": [
-            "Pawn Structures",
-            "King Safety",
-            "Piece Activity",
-            "Basic Endgames",
-        ],
-    }
+def get_unlocked_lessons(completed_lessons):
+    unlocked = set()
 
+    for level_index, level in enumerate(LESSON_LEVELS):
+        
+        lessons = level["lessons"]
+        
+        previous_level_complete = True
+
+        if level_index > 0:
+            previous_level = LESSON_LEVELS[level_index - 1]
+            previous_level_complete = all(
+                lesson in completed_lessons
+                for lesson in previous_level["lessons"]
+            )
+
+        if not previous_level_complete:
+            continue
+
+        for i, lesson in enumerate(lessons):
+            if i == 0:
+                unlocked.add(lesson)
+            elif lessons[i - 1] in completed_lessons:
+                unlocked.add(lesson)
+
+    return unlocked
+
+def lessons_view(request):
+    
     completed_lessons = []
 
     if request.user.is_authenticated:
@@ -1605,21 +1644,24 @@ def lessons_view(request):
                 flat=True
             )
         )
+        
     total_lessons = sum(
-        len(lesson_list)
-        for lesson_list in lessons.values()
+        len(level["lessons"])
+        for level in LESSON_LEVELS
     )
-
-    completed_count = len(completed_lessons)
+    
+    unlocked_lessons = get_unlocked_lessons(
+        completed_lessons
+    )
 
     return render(
         request,
         "game/lessons.html",
         {
-            "lessons": lessons,
+            "levels": LESSON_LEVELS,
+            "unlocked_lessons": unlocked_lessons,
             "completed_lessons": completed_lessons,
             "total_lessons": total_lessons,
-            "completed_count": completed_count
         }
     )
 
@@ -2393,13 +2435,43 @@ def complete_lesson(request, lesson_name):
     )
 
 
+def lesson_map_view(request):
+
+    completed_lessons = []
+
+    if request.user.is_authenticated:
+        completed_lessons = list(
+            LessonProgress.objects.filter(
+                user=request.user,
+                completed=True
+            ).values_list(
+                "lesson_name",
+                flat=True
+            )
+        )
+
+    unlocked_lessons = get_unlocked_lessons(
+        completed_lessons
+    )
+
+    return render(
+        request,
+        "game/lesson_map.html",
+        {
+            "levels": LESSON_LEVELS,
+            "completed_lessons": completed_lessons,
+            "unlocked_lessons": unlocked_lessons,
+        }
+    )
+
+
 @login_required
 def achievements_view(request):
     achievements = Achievement.objects.all().order_by(
         "category",
         "title"
     )
-    
+
     unlocked = set(
         UserAchievement.objects.filter(
             user=request.user
@@ -2412,7 +2484,7 @@ def achievements_view(request):
     featured_badges = FeaturedBadge.objects.filter(
         user=request.user
     ).select_related("achievement")
-    
+
     return render(
         request,
         "game/achievements.html",
@@ -2422,6 +2494,7 @@ def achievements_view(request):
             "featured_badges": featured_badges,
         }
     )
+
 
 @login_required
 def feature_badge(request, achievement_id):
@@ -2462,6 +2535,7 @@ def feature_badge(request, achievement_id):
     )
 
     return redirect("achievements")
+
 
 @login_required
 def remove_featured_badge(request, badge_id):

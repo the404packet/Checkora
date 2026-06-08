@@ -42,7 +42,7 @@ urlpatterns = [
     
     # Features & Progressions
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
-    path('lessons/', views.lessons_view, name='lessons'),
+    path("lessons/", views.lesson_map_view, name="lessons"),
     path('lessons/<str:lesson_name>/', views.lesson_detail_view, name='lesson_detail'),
     path('lessons/<str:lesson_name>/complete/', views.complete_lesson, name='complete_lesson'),
     path("api/puzzle-stats/", views.puzzle_stats_view, name="puzzle_stats"),
