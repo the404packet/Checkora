@@ -1332,3 +1332,33 @@ body {
         box-sizing: border-box;
     }
 }
+
+#privacyModal div[style*="overflow-y:auto"],
+#termsModal div[style*="overflow-y:auto"],
+#disclaimerModal div[style*="overflow-y:auto"],
+#contactModal div[style*="overflow-y:auto"] {
+    scrollbar-width: thin;
+    scrollbar-color: #f0c040 #131522;
+}
+
+#privacyModal div[style*="overflow-y:auto"]::-webkit-scrollbar,
+#termsModal div[style*="overflow-y:auto"]::-webkit-scrollbar,
+#disclaimerModal div[style*="overflow-y:auto"]::-webkit-scrollbar,
+#contactModal div[style*="overflow-y:auto"]::-webkit-scrollbar {
+    width: 12px;
+}
+
+#privacyModal div[style*="overflow-y:auto"]::-webkit-scrollbar-track,
+#termsModal div[style*="overflow-y:auto"]::-webkit-scrollbar-track,
+#disclaimerModal div[style*="overflow-y:auto"]::-webkit-scrollbar-track,
+#contactModal div[style*="overflow-y:auto"]::-webkit-scrollbar-track {
+    background: #131522;
+}
+
+#privacyModal div[style*="overflow-y:auto"]::-webkit-scrollbar-thumb,
+#termsModal div[style*="overflow-y:auto"]::-webkit-scrollbar-thumb,
+#disclaimerModal div[style*="overflow-y:auto"]::-webkit-scrollbar-thumb,
+#contactModal div[style*="overflow-y:auto"]::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffeaa7, #f0c040, #d4a020);
+    border-radius: 999px;
+}
