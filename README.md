@@ -308,6 +308,9 @@ Checkora features a decoupled API layer. Below is the endpoint catalog accompani
 | `POST` | `/api/resign/` | Resign the current game | `/api/resign/` |
 | `POST` | `/api/draw/` | Offer or accept a draw in PvP mode | `/api/draw/` |
 | `GET` | `/api/check-username/` | Check if a username is available | `/api/check-username/?username=player1` |
+| `POST` | `/api/analyze-game/` | Analyze a completed game and return statistics | `/api/analyze-game/` |
+| `GET` | `/api/puzzle-stats/` | Retrieve puzzle streak and statistics | `/api/puzzle-stats/` |
+| `POST` | `/api/cron/cleanup-stale-games/` | Secure cron-triggered cleanup for abandoned games | `/api/cron/cleanup-stale-games/` |
 
 ---
 
@@ -457,6 +460,65 @@ Resets current session variables and starts a fresh match.
   "move_history": [],
   "captured_pieces": {"white": [], "black": []},
   "mode": "ai"
+}
+```
+
+#### 6. Analyze Game (`POST /api/analyze-game/`)
+Analyzes a completed game based on its move history and returns statistics.
+
+**Request Body:**
+
+```json
+{
+  "moves": ["e4", "e5", "Nf3", "Nc6"],
+  "result": "White wins",
+  "reason": "checkmate"
+}
+```
+
+**Response (Success - `200 OK`):**
+
+```json
+{
+  "opening": "Italian Game",
+  "result": "White wins",
+  "total_moves": 2,
+  "captures": 0,
+  "checks": 0,
+  "checkmates": 0,
+  "promotions": 0,
+  "end_reason": "checkmate"
+}
+```
+
+#### 7. Get Puzzle Stats (`GET /api/puzzle-stats/`)
+Returns puzzle streak information for the puzzle interface.
+
+**Response (Success - `200 OK`):**
+
+```json
+{
+  "streak": 0,
+  "longest_streak": 0
+}
+```
+
+#### 8. Cleanup Cron (`POST /api/cron/cleanup-stale-games/`)
+Secure cron-triggered cleanup endpoint for abandoned games.
+
+**Request Headers:**
+
+```http
+Authorization: Bearer <cron_secret>
+```
+
+**Response (Success - `200 OK`):**
+
+```json
+{
+  "status": "success",
+  "deleted_games": 2,
+  "resigned_games": 1
 }
 ```
 
