@@ -51,7 +51,25 @@ class AnalysisTest(TestCase):
         self.assertEqual(summary['promotions'], 0)
         self.assertEqual(summary['end_reason'], 'Checkmate')
 
-    def test_api_endpoint(self):
+    def setUp(self):
+        from django.contrib.auth.models import User
+        self.user = User.objects.create_user(username='testuser', password='password123')
+
+    def test_api_endpoint_requires_login(self):
+        payload = {
+            "moves": ["e4", "e5"],
+            "result": "Win",
+            "reason": "Checkmate"
+        }
+        response = self.client.post(
+            '/api/analyze-game/',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_api_endpoint_success(self):
+        self.client.force_login(self.user)
         payload = {
             "moves": ["e4", "e5", "Nf3", "Nc6", "Bc4"],
             "result": "Win",
@@ -72,4 +90,64 @@ class AnalysisTest(TestCase):
         self.assertEqual(data['checkmates'], 0)
         self.assertEqual(data['promotions'], 0)
         self.assertEqual(data['end_reason'], 'Checkmate')
+
+    def test_api_endpoint_moves_not_list(self):
+        self.client.force_login(self.user)
+        payload = {
+            "moves": "not a list",
+            "result": "Win",
+            "reason": "Checkmate"
+        }
+        response = self.client.post(
+            '/api/analyze-game/',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'error': 'Moves must be a list'})
+
+    def test_api_endpoint_moves_too_long(self):
+        self.client.force_login(self.user)
+        payload = {
+            "moves": ["e4"] * 501,
+            "result": "Win",
+            "reason": "Checkmate"
+        }
+        response = self.client.post(
+            '/api/analyze-game/',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'error': 'Moves list cannot exceed 500'})
+
+    def test_api_endpoint_move_string_too_long(self):
+        self.client.force_login(self.user)
+        payload = {
+            "moves": ["e4", "a" * 21],
+            "result": "Win",
+            "reason": "Checkmate"
+        }
+        response = self.client.post(
+            '/api/analyze-game/',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'error': 'Move must be a string of at most 20 characters'})
+
+    def test_api_endpoint_move_not_string(self):
+        self.client.force_login(self.user)
+        payload = {
+            "moves": ["e4", 123],
+            "result": "Win",
+            "reason": "Checkmate"
+        }
+        response = self.client.post(
+            '/api/analyze-game/',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'error': 'Move must be a string of at most 20 characters'})
 

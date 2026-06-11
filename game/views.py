@@ -1863,7 +1863,7 @@ def confirm_delete_account(request, uidb64, token):
     return redirect('landing')
 
 
-@csrf_exempt
+@login_required
 @require_POST
 def analyze_game_view(request):
     """
@@ -1876,10 +1876,15 @@ def analyze_game_view(request):
         result = data.get('result', 'Unknown')
         reason = data.get('reason', 'Unknown')
 
-        # Ensure moves is a list of strings
         if not isinstance(moves, list):
-            moves = []
-        moves = [str(m) for m in moves]
+            return JsonResponse({'error': 'Moves must be a list'}, status=400)
+
+        if len(moves) > 500:
+            return JsonResponse({'error': 'Moves list cannot exceed 500'}, status=400)
+
+        for m in moves:
+            if not isinstance(m, str) or len(m) > 20:
+                return JsonResponse({'error': 'Move must be a string of at most 20 characters'}, status=400)
 
         summary = build_summary(moves, result, reason)
         return JsonResponse(summary)
