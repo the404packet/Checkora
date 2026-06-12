@@ -651,6 +651,9 @@ def resign_game(request):
 
     game = ChessGame.from_dict(game_data)
 
+    if game.game_status != 'active':
+        return JsonResponse({'valid': False, 'message': 'Game is already over.'}, status=400)
+
     resigning_player = game.player_color if game.mode == 'ai' else game.current_turn
     winner = 'black' if resigning_player == 'white' else 'white'
     game_status = 'resignation'
