@@ -89,6 +89,9 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'game/css/landing.css' %}" />
   </head>
 
@@ -416,10 +419,10 @@
 
           <!-- Interactive Lessons — full width (bento-full, moved above PvP row) -->
           <div class="bento-card bento-full">
-            <div style="display:flex; gap:1.5rem; height:100%;">
+            <div class="lessons-inner">
 
               <!-- LEFT: existing lesson mockup + text -->
-              <div style="flex:1.1; display:flex; flex-direction:column; justify-content:space-between;">
+              <div class="lessons-left">
                 <div class="bento-visual lessons-visual" style="flex:1; margin-bottom:1rem;">
                   <div class="lesson-mockup">
                     <div class="lm-video">
@@ -446,10 +449,10 @@
               </div>
 
               <!-- DIVIDER -->
-              <div style="width:1px; background:rgba(255,255,255,0.06); flex-shrink:0; align-self:stretch;"></div>
+              <div class="lessons-divider"></div>
 
               <!-- RIGHT: quiz preview diagram -->
-              <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0.5rem 0.25rem;">
+              <div class="lessons-right">
                 <div class="quiz-preview-badge">Quiz · End of Chapter</div>
                 <div class="quiz-preview-question">Which move opens the Sicilian Defence?</div>
                 <div class="quiz-preview-opts">
@@ -673,10 +676,10 @@
 
             <!-- Dot Indicators -->
             <div class="about-dots" id="aboutDots">
-                <div class="about-dot active" data-index="0"></div>
-                <div class="about-dot" data-index="1"></div>
-                <div class="about-dot" data-index="2"></div>
-                <div class="about-dot" data-index="3"></div>
+                <button class="about-dot active" data-index="0" aria-label="Go to slide 1" aria-pressed="true"></button>
+                <button class="about-dot" data-index="1" aria-label="Go to slide 2" aria-pressed="false"></button>
+                <button class="about-dot" data-index="2" aria-label="Go to slide 3" aria-pressed="false"></button>
+                <button class="about-dot" data-index="3" aria-label="Go to slide 4" aria-pressed="false"></button>
             </div>
           </div>
 
@@ -1464,20 +1467,13 @@
 
     function goToCard(index) {
         currentCardIndex = index;
-        
-        // translate the track (each card is 25% of track width)
         if (track) track.style.transform = `translateX(-${currentCardIndex * 25}%)`;
-        
-        // update progress bar
         const progress = (currentCardIndex / (CARD_COUNT - 1)) * 100;
         if (progressFill) progressFill.style.width = `${progress}%`;
-
-        // current card index
         if (currentCardEl) currentCardEl.textContent = currentCardIndex + 1;
-
-        // dots
         dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === currentCardIndex);
+            dot.setAttribute('aria-pressed', i === currentCardIndex ? 'true' : 'false');
         });
     }
 
