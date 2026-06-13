@@ -1720,12 +1720,7 @@
         const seq = ++aiRequestSeq;
         aiThinking = true;
 
-        // AI state is already shown in the turn badge
-        const thinkingInterval = setInterval(() => {
-            if (!aiThinking) {
-                clearInterval(thinkingInterval);
-            }
-        }, 400);
+       
         try {
             let piecesOnBoard = 0;
             for (let r = 0; r < 8; r++) {
@@ -1742,19 +1737,13 @@
             await new Promise(resolve => setTimeout(resolve, delay));
 
             // Abort if a new game started, reconnect happened, or another request took over during delay
-            if (seq !== aiRequestSeq) {
-                clearInterval(thinkingInterval);
-                return;
-            }
+            if (seq !== aiRequestSeq) return;
 
             // fix: abort if game ended during delay
-            if (gameOver) {
-                clearInterval(thinkingInterval);
-                return;
-            }
+            if (gameOver) return;
 
             const data = await post('/api/ai-move/', {});
-            clearInterval(thinkingInterval); // fix: clear after API call completes, not before
+            
 
             // Abort if sequence is no longer current after API call completes
             if (seq !== aiRequestSeq) {
@@ -1840,10 +1829,9 @@
             } else {
                 showStatus(data.message, true);
             }
-        } catch (e) {
-            clearInterval(thinkingInterval);
-            await handleReconnect();
-        } finally {
+            } catch (e) {
+                await handleReconnect();
+            } finally {
             // always reset aiThinking... a stale sequence means a newer request owns it, but it will set its own flag
             aiThinking = false;
         }
