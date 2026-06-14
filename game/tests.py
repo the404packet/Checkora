@@ -1334,16 +1334,16 @@ class StatsCleanupTest(TestCase):
         self.client.login(username='usera', password='password123')
         response = self.client.get('/stats/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<td style="font-weight: 600;">PvP</td>')
-        self.assertNotContains(response, '<td style="font-weight: 600;">AI</td>')
+        self.assertContains(response, 'PvP')
+        self.assertNotContains(response, 'AI')
         self.client.logout()
 
         # Check as User B
         self.client.login(username='userb', password='password123')
         response = self.client.get('/stats/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<td style="font-weight: 600;">AI</td>')
-        self.assertNotContains(response, '<td style="font-weight: 600;">PvP</td>')
+        self.assertContains(response, 'AI')
+        self.assertNotContains(response, 'PvP')
 
     def test_empty_stats_page(self):
         """Users with no games should see a clean empty state."""
