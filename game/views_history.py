@@ -61,14 +61,20 @@ def save_game_record(request, pgn: str, result: str, termination: str,
     if not request.session.session_key:
         request.session.create()
 
-    record = GameRecord.objects.create(
-        session_key=request.session.session_key,
-        white_label=white_label,
-        black_label=black_label,
-        result=result,
-        termination=termination,
-        pgn=pgn,
-    )
+    record_data = {
+        'session_key': request.session.session_key,
+        'white_label': white_label,
+        'black_label': black_label,
+        'result': result,
+        'termination': termination,
+        'pgn': pgn,
+    }
+
+    # If the user is logged in, attach their account to the record!
+    if request.user.is_authenticated:
+        record_data['user'] = request.user
+
+    record = GameRecord.objects.create(**record_data)
     return record
 
 

@@ -38,7 +38,7 @@ class GameResult(models.Model):
         help_text="List of moves played during the game in chronological order"
     )
     replay_record = models.ForeignKey(
-    'GameRecord', null=True, blank=True, on_delete=models.SET_NULL
+                    'GameRecord', null=True, blank=True, on_delete=models.SET_NULL
     )
 
     class Meta:
@@ -383,6 +383,12 @@ class GameRecord(models.Model):
     pgn = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(default=_expires_at_default, db_index=True)
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Game {self.id} ({self.white_label} vs {self.black_label})"
 
     class Meta:
         ordering = ["-created_at"]
@@ -393,3 +399,7 @@ class GameRecord(models.Model):
         if delta.total_seconds() <= 0:
             return 0
         return int(delta.total_seconds() // 3600)
+
+    @property
+    def is_expired(self):
+        return self.hours_remaining <= 0

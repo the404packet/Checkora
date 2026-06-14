@@ -821,7 +821,7 @@
         loadGameList().then(() => {
   const params = new URLSearchParams(window.location.search);
   const gameId = params.get('game');
-  if (gameId) {
+  if (gameId && /^\d+$/.test(gameId)) {
     setTimeout(()=>{
         const row = document.querySelector(`.game-item[data-id="${gameId}"]`);
         if (row) row.click();

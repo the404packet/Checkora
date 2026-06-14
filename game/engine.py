@@ -116,6 +116,7 @@ class ChessGame:
             result = '1-0' if self.current_turn == 'black' else '0-1'
 
         pgn_moves = []
+        
         def _fix_castling(move):
             return move.replace('0-0-0', 'O-O-O').replace('0-0', 'O-O')
         for i in range(0, len(self.move_history), 2):
