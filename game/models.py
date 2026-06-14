@@ -4,7 +4,6 @@ from django.db.models import Q
 from django.core.exceptions import ValidationError
 from datetime import timedelta
 from django.utils import timezone
-from django.contrib.auth.models import User
 
 class GameResult(models.Model):
     user = models.ForeignKey(
@@ -376,7 +375,7 @@ def _expires_at_default():
 
 
 class GameRecord(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     session_key = models.CharField(max_length=40, db_index=True)
     white_label = models.CharField(max_length=64, default="White")
     black_label = models.CharField(max_length=64, default="Black")
@@ -385,6 +384,7 @@ class GameRecord(models.Model):
     pgn = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(default=_expires_at_default, db_index=True)
+    
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
