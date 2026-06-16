@@ -8,6 +8,7 @@
     <link rel="icon" type="image/jpeg" href="{% static 'game/favicon.jpeg' %}">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght=400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'game/css/landing.css' %}">
     <link rel="stylesheet" href="{% static 'game/css/forum.css' %}">
 </head>
@@ -49,27 +50,51 @@
     <div class="forum-container">
         <a href="{% url 'forum' %}" class="forum-back-link">← Back to Forum</a>
 
-        <div class="forum-detail-header">
-            <h1 class="forum-detail-title">{{ discussion.title }}</h1>
-            <div class="forum-card-meta">
+        <div class="forum-discussion-card">
+            <div class="forum-discussion-meta">
+                <span class="forum-meta-label">Started by</span>
                 <span class="forum-author">{{ discussion.user.username }}</span>
+
                 <span class="forum-dot">•</span>
-                <span class="forum-date">{{ discussion.created_at|date:"M d, Y H:i" }}</span>
+
+                <span class="forum-meta-label">On</span>
+                <span class="forum-date">
+                    {{ discussion.created_at|date:"M d, Y H:i" }}
+                </span>
             </div>
-            <p class="forum-detail-content">{{ discussion.content|linebreaks }}</p>
+
+            <h1 class="forum-detail-title">{{ discussion.title }}</h1>
+
+            <div class="forum-detail-content">
+                {{ discussion.content|linebreaks }}
+            </div>
         </div>
 
         <div class="forum-replies-section">
-            <h2 class="forum-replies-title">{{ replies.count }} Repl{{ replies.count|pluralize:"y,ies" }}</h2>
+            <h2 class="forum-replies-title">
+                Discussion Replies ({{ replies.count }})
+            </h2>
 
             {% for reply in replies %}
             <div class="forum-reply-card">
-                <div class="forum-card-meta">
+                <div class="forum-discussion-meta">
+                    <span class="forum-meta-label">Posted by</span>
                     <span class="forum-author">{{ reply.user.username }}</span>
+
                     <span class="forum-dot">•</span>
-                    <span class="forum-date">{{ reply.created_at|date:"M d, Y H:i" }}</span>
+
+                    <span class="forum-date">
+                        {{ reply.created_at|date:"M d, Y H:i" }}
+                    </span>
                 </div>
-                <p class="forum-reply-content">{{ reply.content|linebreaks }}</p>
+
+                <div class="forum-reply-content">
+                    {{ reply.content|linebreaks }}
+                </div>
+            </div>
+            {% empty %}
+            <div class="forum-empty">
+                No replies yet. Be the first to contribute!
             </div>
             {% endfor %}
         </div>
@@ -79,7 +104,21 @@
     <form method="post" action="{% url 'forum_reply' discussion.id %}" class="forum-reply-bar">
         {% csrf_token %}
         {{ form.content }}
-        <button type="submit" class="forum-btn-submit">Post Reply</button>
+        <button type="submit" class="forum-btn-submit">
+            Post
+        </button>
+    </form>
+    {% else %}
+    <div class="forum-login-prompt">
+        <a href="{% url 'login' %}">Login</a> to join the discussion.
+    </div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'forum_reply' discussion.id %}" class="forum-reply-bar">
+        {% csrf_token %}
+        {{ form.content }}
+        <button type="submit" class="forum-btn-submit">Post</button>
     </form>
     {% else %}
     <div class="forum-login-prompt">

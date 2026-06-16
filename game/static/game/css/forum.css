@@ -1,10 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
-
 .forum-container {
     width: min(95%, 1600px);
     margin: 0 auto;
     padding: 3rem 1.5rem 7rem;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.forum-container,
+.forum-container * {
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .forum-header {
@@ -190,22 +193,53 @@
 
 .forum-detail-header {
     margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .forum-detail-title {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-size: 1.4rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.forum-discussion-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.forum-discussion-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.forum-meta-label {
+    color: #8f96b0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.forum-author {
+    color: var(--accent-gold);
+    font-weight: 700;
+}
+
+.forum-date {
+    color: #c2c7da;
 }
 
 .forum-detail-content {
-    color: var(--text-primary);
-    font-size: 1.05rem;
+    color: #d7dcec;
+    font-size: 1rem;
     line-height: 1.7;
-    margin-top: 1.25rem;
 }
 
 .forum-replies-title {
@@ -216,18 +250,28 @@
 }
 
 .forum-reply-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px;
-    padding: 0.9rem 1.25rem;
-    margin-bottom: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.9rem;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.forum-reply-card:hover {
+    border-color: rgba(240, 192, 64, 0.35);
+    box-shadow: 0 0 12px rgba(240, 192, 64, 0.08);
 }
 
 .forum-reply-content {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
     color: var(--text-primary);
-    font-size: 0.98rem;
-    line-height: 1.6;
-    margin-top: 0.6rem;
+    line-height: 1.65;
 }
 
 .forum-new-form {
@@ -260,7 +304,7 @@
     border-radius: 8px;
     padding: 0.85rem 1rem;
     color: #ffffff;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: inherit;
     font-size: 1rem;
     resize: vertical;
     transition: border-color 0.25s, box-shadow 0.25s;
@@ -315,7 +359,7 @@
     border-radius: 8px;
     padding: 0.75rem 1rem;
     color: #ffffff;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: inherit;
     font-size: 1rem;
     resize: none;
     min-height: 48px;
