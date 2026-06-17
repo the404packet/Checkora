@@ -1569,6 +1569,17 @@
                 }
 
                 currentTrainerStep++;
+                if (
+                    currentTrainerStep >=
+                    openingTrainerSteps.length
+                ) {
+                    openingTrainerMode = false;
+
+                    showStatus(
+                        "Opening sequence completed!",
+                        false
+                    );
+                }
             }
 
             if (data.valid) {
