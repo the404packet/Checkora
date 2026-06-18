@@ -316,10 +316,7 @@
         aria-valuemin="0"
         aria-valuemax="100"
         aria-label="Lesson completion progress">
-
-        <div class="progress-fill" id="lesson-progress-fill" data-progress="{% widthratio completed_count total_lessons 100 %}"></div>
-        <script>document.getElementById('lesson-progress-fill').style.width = document.getElementById('lesson-progress-fill').dataset.progress + '%';</script>
-
+        <div class="progress-fill" id="lesson-progress-fill" style="width: {% widthratio completed_count total_lessons 100 %}%;"></div>
     </div>
 
     <p class="progress-text">

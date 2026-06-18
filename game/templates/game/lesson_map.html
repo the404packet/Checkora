@@ -387,9 +387,9 @@ background-size:60px 60px;
                             </span>
 
                         {% elif lesson in unlocked_lessons %}
-                            <span class="badge active">
+                            <a href="{% url 'lesson_detail' lesson|slugify %}" class="badge active">
                                 Start Lesson
-                            </span>
+                            </a>
 
                         {% else %}
                             <span class="badge locked-badge">
