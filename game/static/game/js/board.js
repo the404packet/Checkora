@@ -1546,6 +1546,41 @@
             if (promotionPiece) body.promotion_piece = promotionPiece;
 
             const data = await post('/api/move/', body);
+
+            // Opening Trainer validation
+            if (openingTrainerMode) {
+                const expectedMove =
+                    openingTrainerSteps[currentTrainerStep]?.expected_move;
+
+                const playedMove =
+                    `${toSquare(fr, fc)}-${toSquare(tr, tc)}`;
+
+                if (
+                    playedMove.toLowerCase() !== expectedMove.toLowerCase()
+                ) {
+                    showStatus(
+                        `Incorrect move. Expected: ${expectedMove}`,
+                        true
+                    );
+
+                    deselect();
+                    return;
+                }
+
+                currentTrainerStep++;
+                if (
+                    currentTrainerStep >=
+                    openingTrainerSteps.length
+                ) {
+                    openingTrainerMode = false;
+
+                    showStatus(
+                        "Opening sequence completed!",
+                        false
+                    );
+                }
+            }
+
             if (data.valid) {
                 illegalMoveCount = 0;
                 playSound(data);

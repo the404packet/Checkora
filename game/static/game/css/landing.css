@@ -2496,6 +2496,21 @@ body {
         box-sizing: border-box;
     }
 }
+/* Navbar Light Mode */
+
+[data-theme="light"] .navbar {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .nav-links a {
+    color: #374151;
+}
+
+[data-theme="light"] .nav-links a:hover {
+    color: #C9A84C;
+}
 [data-theme="light"] .architecture-badge {
     color: #374151;
 }
@@ -2510,12 +2525,6 @@ body {
 
 [data-theme="light"] .faq-answer-content {
     color: #374151;
-}
-
-[data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .bento-visual {
