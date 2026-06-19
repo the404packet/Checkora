@@ -1013,6 +1013,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const puzzleId = urlParams.get('puzzle_id');
         if (puzzleId) {
+            // Remove the puzzle_id query param from the URL to prevent recursion loop
+            const url = new URL(window.location);
+            url.searchParams.delete('puzzle_id');
+            window.history.replaceState({}, document.title, url.pathname + url.search);
+
             try {
                 const response = await fetch(`/api/puzzles/${puzzleId}/`);
                 if (response.ok) {
