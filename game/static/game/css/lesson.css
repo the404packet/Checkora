@@ -371,7 +371,7 @@ h1 {
     pointer-events: none;
     transition: opacity 0.2s ease;
 }
-/*KEYBOARD NAVIGATION */
+/* KEYBOARD NAVIGATION */
 .lesson-square:focus,
 .lesson-square:focus-visible {
     outline: 3px solid #baca2b;
