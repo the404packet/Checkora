@@ -3705,7 +3705,11 @@ def apply_discussion_sort(queryset, sort_by):
         return queryset.order_by("-bookmark_count", "-created_at")
 
     if sort_by == "recently_active":
-        return queryset.order_by("-last_reply_at", "-updated_at", "-created_at")
+        return queryset.order_by(
+            F("last_reply_at").desc(nulls_last=True),
+            "-updated_at",
+            "-created_at",
+        )
 
     return queryset.order_by("-created_at")
 
