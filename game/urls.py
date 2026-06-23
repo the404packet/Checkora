@@ -51,6 +51,18 @@ urlpatterns = [
 
     path("api/puzzle-stats/", views.puzzle_stats_view, name="puzzle_stats"),
     path("api/puzzles/daily/", views.get_daily_puzzle, name="daily_puzzle"),
+    path("puzzles/", views.puzzles_view, name="puzzles"),
+    path("api/puzzles/", views.puzzles_list_api, name="puzzles_list_api"),
+    path(
+        "api/puzzles/<int:puzzle_id>/",
+        views.puzzle_detail_api,
+        name="puzzle_detail_api"
+    ),
+    path(
+        "api/puzzles/<int:puzzle_id>/solution/",
+        views.puzzle_solution_api,
+        name="puzzle_solution_api"
+    ),
     
     # Badges & Achievements
     path("achievements/", views.achievements_view, name="achievements"),
@@ -63,4 +75,17 @@ urlpatterns = [
     path("forum/new/", views.forum_new, name="forum_new"),
     path("forum/<int:discussion_id>/", views.forum_detail, name="forum_detail"),
     path("forum/<int:discussion_id>/reply/", views.forum_reply, name="forum_reply"),
+
+    # Reply actions
+    path(
+        "forum/reply/<int:reply_id>/edit/",
+        views.forum_reply_edit,
+        name="forum_reply_edit",
+    ),
+
+    path(
+        "forum/reply/<int:reply_id>/delete/",
+        views.forum_reply_delete,
+        name="forum_reply_delete",
+    ),
 ]
