@@ -1809,7 +1809,12 @@
     const cursorTypeLabel = document.getElementById('cursorTypeLabel');
     const cursorOptions = document.querySelectorAll('.cursor-type-option');
     let activeCursor = 'default';
-
+    // Only hide it if it's explicitly set to 'default'
+    if (activeCursor === 'default') {
+        cursor.style.display = 'none';
+    } else {
+        cursor.style.display = 'block';
+    }
     let mouseX = 0;
     let mouseY = 0;
 
@@ -1840,7 +1845,12 @@
       cursorOptions.forEach(option => {
         option.classList.toggle('selected', option.dataset.cursor === type);
       });
+      if (type === 'default') {
+        cursor.style.display = 'none';
+    } else {
+        cursor.style.display = 'block';
     }
+  }
 
     cursorTrigger.addEventListener('click', e => {
       e.stopPropagation();
