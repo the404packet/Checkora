@@ -44,17 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         toggle.textContent = theme === "light" ? "☀️" : "🌙";
     };
-
+    updateToggleState(savedTheme);
     if (toggle) {
-        updateToggleState(savedTheme);
-
         toggle.addEventListener("click", () => {
-            const current = document.documentElement.getAttribute("data-theme");
-            const next = current === "light" ? "dark" : "light";
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "dark" : "light";
 
-            document.documentElement.setAttribute("data-theme", next);
-            safeLocalStorage.set("theme", next);
-            updateToggleState(next);
+            document.documentElement.setAttribute("data-theme", newTheme);
+            safeLocalStorage.set("theme", newTheme);
+            updateToggleState(newTheme);
         });
     }
 });

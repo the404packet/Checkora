@@ -52,7 +52,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.decorators import login_required
 from django.db import models
 
-from django.db.models import Avg, Max, Min, Sum
+from django.db.models import Count, Avg, Max, Min, Sum
 from datetime import timedelta
 
 from .opening_trainer_data import OPENINGS
@@ -3690,20 +3690,49 @@ def download_badge(request, achievement_id):
         return HttpResponseServerError(
             "Badge generation failed."
         )
+    
+def apply_discussion_sort(queryset, sort_by):
+    queryset = queryset.annotate(
+        reply_count=Count("replies", distinct=True),
+        bookmark_count=Count("bookmarks", distinct=True),
+        last_reply_at=Max("replies__created_at"),
+    )
+
+    if sort_by == "oldest":
+        return queryset.order_by("created_at")
+
+    if sort_by == "most_replies":
+        return queryset.order_by("-reply_count", "-created_at")
+
+    if sort_by == "most_bookmarked":
+        return queryset.order_by("-bookmark_count", "-created_at")
+
+    if sort_by == "recently_active":
+        return queryset.order_by(
+            F("last_reply_at").desc(nulls_last=True),
+            "-updated_at",
+            "-created_at",
+        )
+
+    return queryset.order_by("-created_at")
 
 def forum_list(request):
+    sort_by = request.GET.get("sort", "newest")
+
     discussions = Discussion.objects.select_related("user").prefetch_related("replies")
 
     user_discussions = Discussion.objects.none()
     bookmarked_discussions = Discussion.objects.none()
     bookmarked_ids = set()
 
+    discussions = apply_discussion_sort(discussions, sort_by)
+
     if request.user.is_authenticated:
         user_discussions = (
             Discussion.objects
             .filter(
-                models.Q(user=request.user) |
-                models.Q(replies__user=request.user)
+                Q(user=request.user) |
+                Q(replies__user=request.user)
             )
             .select_related("user")
             .prefetch_related("replies")
@@ -3717,6 +3746,9 @@ def forum_list(request):
             .prefetch_related("replies")
             .distinct()
         )
+
+        user_discussions = apply_discussion_sort(user_discussions, sort_by)
+        bookmarked_discussions = apply_discussion_sort(bookmarked_discussions, sort_by)
 
         bookmarked_ids = set(
             request.user.discussion_bookmarks.values_list(
@@ -3733,6 +3765,7 @@ def forum_list(request):
             "user_discussions": user_discussions,
             "bookmarked_discussions": bookmarked_discussions,
             "bookmarked_ids": bookmarked_ids,
+            "sort_by": sort_by,
         }
     )
 

@@ -64,6 +64,32 @@
             <p class="forum-subtitle">
                 Discuss strategies, ask questions, and connect with fellow players.
             </p>
+
+            <form method="get" class="forum-sort-form">
+                <label for="forum-sort">Sort by</label>
+
+                <select name="sort" id="forum-sort" onchange="this.form.submit()">
+                    <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>
+                        Newest First
+                    </option>
+
+                    <option value="oldest" {% if sort_by == "oldest" %}selected{% endif %}>
+                        Oldest First
+                    </option>
+
+                    <option value="most_replies" {% if sort_by == "most_replies" %}selected{% endif %}>
+                        Most Replies
+                    </option>
+
+                    <option value="most_bookmarked" {% if sort_by == "most_bookmarked" %}selected{% endif %}>
+                        Most Bookmarked
+                    </option>
+
+                    <option value="recently_active" {% if sort_by == "recently_active" %}selected{% endif %}>
+                        Recently Active
+                    </option>
+                </select>
+            </form>
         </div>
 
         <div class="forum-tabs">
