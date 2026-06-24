@@ -1,5 +1,8 @@
 import os
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Load the opening book JSON once on startup
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -10,8 +13,7 @@ try:
         OPENINGS = json.load(f)
 except FileNotFoundError:
     OPENINGS = {}
-    # TODO: replace with project logger
-    print(f"warning: opening book not found at {OPENINGS_JSON_PATH}")
+    logger.warning("Opening book not found at %s", OPENINGS_JSON_PATH)
 except json.JSONDecodeError as exc:
     raise RuntimeError(f"invalid openings.json: {exc}") from exc
 
