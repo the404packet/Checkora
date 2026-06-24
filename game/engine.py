@@ -161,6 +161,8 @@ DP cache is intentionally excluded to save cookie space."""
             'game_status': self.game_status,
             'draw_reason': self.draw_reason,
             'threefold_warning': self.threefold_warning,
+            'initial_fullmove': getattr(self, 'initial_fullmove', 1),
+            'initial_turn_was_black': getattr(self, 'initial_turn_was_black', False),
         }
 
     @classmethod
@@ -187,6 +189,8 @@ DP cache is intentionally excluded to save cookie space."""
         game.game_status = data.get('game_status', 'active')
         game.draw_reason = data.get('draw_reason', None)
         game.threefold_warning = data.get('threefold_warning', False)
+        game.initial_fullmove = data.get('initial_fullmove', 1)
+        game.initial_turn_was_black = data.get('initial_turn_was_black', False)
         repetition_history = data.get('repetition_history')
         if isinstance(repetition_history, list) and repetition_history:
             game.repetition_history = repetition_history
