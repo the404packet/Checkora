@@ -2945,7 +2945,22 @@ body.hide-native-cursor * {
     color: var(--accent-gold);
     border-color: rgba(212, 160, 23, 0.3);
 }
+/* Material Score - Light Theme */
+[data-theme="light"] .white-mat .mat-pieces {
+    color: #111827;
+}
 
+[data-theme="light"] .black-mat .mat-pieces {
+    color: #4b5563;
+}
+
+[data-theme="light"] .white-mat .mat-score {
+    color: #16a34a;
+}
+
+[data-theme="light"] .black-mat .mat-score {
+    color: #6b7280;
+}
 .modal-scroll-content {
     scrollbar-width: thin;
     scrollbar-color: var(--accent-gold) #131522;
