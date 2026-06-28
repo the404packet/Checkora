@@ -310,48 +310,53 @@ def update_opening_progress(
     if not user:
         return None
 
-    progress, created = OpeningProgress.objects.get_or_create(
-        user=user,
-        opening_name=opening_name,
-    )
+    with transaction.atomic():
+        progress, created = (
+            OpeningProgress.objects
+            .select_for_update()
+            .get_or_create(
+                user=user,
+                opening_name=opening_name,
+            )
+        )
 
-    if created:
-        progress.openings_started = 1
+        if created:
+            progress.openings_started = 1
     
-    if correct_move:
-        progress.correct_moves += 1
+        if correct_move:
+            progress.correct_moves += 1
 
-    if incorrect_move:
-        progress.incorrect_moves += 1
+        if incorrect_move:
+            progress.incorrect_moves += 1
 
-    if checkpoint is not None:
-        progress.last_checkpoint = checkpoint
+        if checkpoint is not None:
+            progress.last_checkpoint = checkpoint
         
-        progress.completion_percentage = min(
-            100,
-            checkpoint
+            progress.completion_percentage = min(
+                100,
+                checkpoint,
+            )
+
+        total_moves = (
+            progress.correct_moves +
+            progress.incorrect_moves
         )
 
-    total_moves = (
-        progress.correct_moves +
-        progress.incorrect_moves
-    )
+        if total_moves > 0:
+            progress.accuracy_percentage = round(
+                (progress.correct_moves / total_moves) * 100,
+                2
+            )
 
-    if total_moves > 0:
-        progress.accuracy_percentage = round(
-            (progress.correct_moves / total_moves) * 100,
-            2
-        )
+        first_completion = False
 
-    first_completion = False
+        if completed and progress.openings_completed == 0:
+            progress.openings_completed = 1
+            first_completion = True
 
-    if completed and progress.openings_completed == 0:
-        progress.openings_completed = 1
-        first_completion = True
+        progress.save()
 
-    progress.save()
-
-    return progress, first_completion
+        return progress, first_completion
 
 def generate_badge(user_achievement):
     achievement = user_achievement.achievement

@@ -63,7 +63,7 @@ async function persistOpeningProgress() {
     const token = csrf();
 
     try {
-        await fetch("/api/opening-stats/", {
+        const response = await fetch("/api/opening-stats/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -75,6 +75,15 @@ async function persistOpeningProgress() {
                 accuracy: 100,
             }),
         });
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to save progress (${response.status})`
+            );
+        }
+
+        return await response.json();
+
     } catch (error) {
         console.error(
             "Failed to save opening progress:",
