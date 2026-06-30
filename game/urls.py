@@ -38,7 +38,12 @@ urlpatterns = [
         views.password_reset_account_selection,
         name='password_reset_account_selection'
     ),
-    
+
+    # Avatar Management
+    path('avatar/', views.upload_avatar, name='upload_avatar'),
+    path('avatar/remove/', views.remove_avatar, name='remove_avatar'),
+    path('api/avatar/', views.get_avatar, name='get_avatar'),
+
     # Features & Progressions
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
     path("lessons/", views.lesson_map_view, name="lessons"),
@@ -48,6 +53,12 @@ urlpatterns = [
     # Opening Trainer
     path("openings/", views.opening_trainer, name="opening_trainer"),
     path("openings/<slug:slug>/", views.opening_detail, name="opening_detail"),
+
+    path(
+        "api/opening-stats/",
+        views.update_opening_stats,
+        name="update_opening_stats",
+    ),
 
     path("api/puzzle-stats/", views.puzzle_stats_view, name="puzzle_stats"),
     path("api/puzzles/daily/", views.get_daily_puzzle, name="daily_puzzle"),
